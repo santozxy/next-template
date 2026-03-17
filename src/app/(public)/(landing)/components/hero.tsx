@@ -48,7 +48,7 @@ export function Hero() {
         {/* Command */}
         <div className="mt-12 inline-flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 font-mono text-sm">
           <span className="text-muted-foreground">$</span>
-          <code className="text-foreground">npx create-next-app -e https://github.com/seu-usuario/nexttemplate</code>
+          <code className="text-foreground">pnpm create-next-app@latest https://github.com/syslae-solutions/next-template</code>
         </div>
       </div>
     </section>
