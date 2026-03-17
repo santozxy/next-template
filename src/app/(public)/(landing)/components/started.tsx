@@ -19,7 +19,7 @@ const commands = [
   },
 ]
 
-export function GetStarted() {
+export function Started() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
 
   const handleCopy = async (command: string, index: number) => {
