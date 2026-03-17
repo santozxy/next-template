@@ -1,5 +1,5 @@
 export const configURL = () => {
-  switch (process.env.MODE) {
+  switch (process.env.NEXT_PUBLIC_MODE) {
     case "prod":
       return process.env.NEXT_PUBLIC_API_PROD_BASE_URL;
     case "dev":
