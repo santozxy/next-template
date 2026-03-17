@@ -30,7 +30,7 @@ export async function Header({ children }: HeaderProps) {
   const { name } = session.user;
 
   return (
-    <header className="bg-sidebar border-divider sticky top-0 z-[10] flex h-16 w-full items-center justify-between border-b px-6 print:hidden">
+    <header className="bg-sidebar border-divider sticky top-0 z-10 flex h-16 w-full items-center justify-between border-b px-6 print:hidden">
       <div className="flex flex-row items-center gap-6">
         <SidebarTrigger className="h-7 w-7" />
         <h1 className="text-xl font-semibold">{<Pathname />}</h1>

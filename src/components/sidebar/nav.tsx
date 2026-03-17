@@ -18,15 +18,16 @@ export function Nav({ permissions }: NavProps) {
     <SidebarMenu className="flex flex-col gap-2 p-3">
       {nav.map((item) => (
         <SidebarMenuItem key={item.href} className="flex items-center">
-          <SidebarMenuButton asChild>
+          <SidebarMenuButton asChild className="">
             <Link
               prefetch={true}
               href={item.href}
-              className={`text-muted-foreground hover:bg-secondary/50 flex items-center gap-3 rounded-lg py-2 ${
-                pathname === item.href
-                  ? "bg-secondary text-primary font-semibold"
-                  : ""
-              }`}
+              className={`flex items-center gap-3 flex-row rounded-lg py-2 text-muted-foreground hover:bg-secondary/50 
+                      ${
+                        pathname === item.href
+                          ? "bg-secondary/50 text-primary font-medium"
+                          : ""
+                      }`}
             >
               {item.icon}
               <span>{item.title}</span>

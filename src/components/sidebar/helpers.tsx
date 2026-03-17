@@ -7,9 +7,9 @@ import {
 
 export const identifierLinks: { [key: string]: string } = {
   "/dashboard": "Dashboard",
-  "/users": "Usuários",
-  "/users/create": "Adicionar usuário",
-  "/users/[id]/update": "Editar usuário",
+  "/events": "Eventos",
+  "/events/create": "Adicionar evento",
+  "/events/[id]/update": "Editar evento",
 };
 
 export interface NavItem {
@@ -28,9 +28,9 @@ export const navItems: NavItem[] = [
   },
 
   {
-    title: "Usuários",
+    title: "Eventos",
     icon: <Users />,
-    href: "/users",
+    href: "/events",
     requiredPermissions: [],
   },
 ];

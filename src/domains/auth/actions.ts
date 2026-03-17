@@ -15,5 +15,6 @@ export async function login(credentials: Credentials) {
     method: "POST",
     body,
   });
+
   return response?.data;
 }

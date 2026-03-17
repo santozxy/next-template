@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/shadcn/utils";
 import type { ReactNode } from "react";
-import { LoadMore } from "./load-more";
+import { LoadMore } from "../pagination/load-more";
 
 /** Describes how a single column is mapped from the data to the table. */
 export interface ColumnDef<T> {
@@ -62,14 +62,7 @@ export interface DataTableProps<T> {
   onLoadMore?: () => void;
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
-/**
- * Safely reads a (potentially nested) value from an object using dot-notation.
- * e.g. getNestedValue({ a: { b: 1 } }, "a.b") -> 1
- */
 function getNestedValue(obj: unknown, path: string): unknown {
   return path.split(".").reduce((acc: unknown, key: string) => {
     if (

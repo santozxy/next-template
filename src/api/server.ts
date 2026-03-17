@@ -37,7 +37,9 @@ export async function fetchServer<T>(
     headers,
     ...options,
     body: options?.body ? JSON.stringify(options.body) : undefined,
-  }).catch(() => {
+  }).catch((e) => {
+    console.error("Fetch error:", e);
+
     throw new HandleError({
       message:
         "Não foi possível conectar ao servidor. Verifique sua conexão com a internet e tente novamente.",

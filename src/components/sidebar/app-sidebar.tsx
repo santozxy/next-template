@@ -24,7 +24,7 @@ export async function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="border-sidebar-border flex h-16 justify-center border-b">
         <div className="flex items-center justify-center gap-6 px-2">
-          <Image src={images.logo} alt="Logo" width={180} />
+          <Image src={images.logo} alt="Logo" width={100} />
         </div>
       </SidebarHeader>
       <SidebarContent>

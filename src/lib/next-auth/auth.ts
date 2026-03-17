@@ -70,7 +70,8 @@ export async function getServerSession() {
   return getSession(authOptions);
 }
 
-// export async function getPermissionsFromSession() {
-//   const session = await getServerSession();
-//   return session?.user?.permissions || [];
-// }
+
+ export async function getPermissionsFromSession() {
+   const session = await getServerSession();
+   return session?.user?.permissions || [];
+ }

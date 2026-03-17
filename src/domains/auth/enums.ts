@@ -10,4 +10,9 @@ export enum Permission {
   createRole = "createRole",
   updateRole = "updateRole",
   deleteRole = "deleteRole",
+  // Event permissions
+  viewEvents = "viewEvents",
+  createEvents = "createEvent",
+  updateEvents = "updateEvent",
+  deleteEvents = "deleteEvent",
 }

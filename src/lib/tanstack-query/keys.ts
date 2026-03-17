@@ -1,5 +1,5 @@
 export enum QueryKeys {
-  UsersList = "/users",
-  UserDetails = "/users/:id",
-  UserProfile = "/users/profile",
+  EventsList = "events-list",
+  EventDetails = "event-details",
+  Tags = "Tags",
 }
