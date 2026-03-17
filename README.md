@@ -1,36 +1,602 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# next-template
 
-## Getting Started
+Template oficial para sistemas web da organização. Este repositório define a arquitetura, convenções e padrões que devem ser seguidos em todos os projetos Next.js. Modificações pontuais são permitidas desde que a estrutura central e as convenções aqui descritas sejam preservadas.
 
-First, run the development server:
+---
+
+## Sumário
+
+- [Tecnologias](#tecnologias)
+- [Configuração do Ambiente](#configuração-do-ambiente)
+- [Estrutura de Pastas](#estrutura-de-pastas)
+- [Arquitetura de Rotas](#arquitetura-de-rotas)
+- [Camada de API](#camada-de-api)
+- [Domínios](#domínios)
+- [Autenticação e Sessão](#autenticação-e-sessão)
+- [Controle de Permissões](#controle-de-permissões)
+- [Gerenciamento de Estado (TanStack Query)](#gerenciamento-de-estado-tanstack-query)
+- [Formulários](#formulários)
+- [Componentes de UI](#componentes-de-ui)
+- [Hooks Customizados](#hooks-customizados)
+- [Utilitários](#utilitários)
+- [Estilização e Temas](#estilização-e-temas)
+- [Convenções de Código](#convenções-de-código)
+- [Scripts Disponíveis](#scripts-disponíveis)
+
+---
+
+## Tecnologias
+
+| Tecnologia | Versão | Finalidade |
+|---|---|---|
+| Next.js | 16.x | Framework principal (App Router) |
+| React | 19.x | Biblioteca de UI |
+| TypeScript | 5.x | Tipagem estática |
+| TailwindCSS | 4.x | Estilização |
+| shadcn/ui + Radix UI | - | Componentes de UI acessíveis |
+| TanStack Query | 5.x | Gerenciamento de estado e cache |
+| NextAuth.js | 4.x | Autenticação |
+| React Hook Form | 7.x | Gerenciamento de formulários |
+| Zod | 4.x | Validação de schemas |
+| Sonner | 2.x | Notificações toast |
+| date-fns | 4.x | Manipulação de datas |
+| Recharts | 2.x | Gráficos |
+| Lucide React | - | Ícones |
+
+---
+
+## Configuração do Ambiente
+
+### 1. Instalar dependências
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Variáveis de ambiente
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copie o arquivo de exemplo e preencha os valores:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cp env.example .env.local
+```
 
-## Learn More
+| Variável | Obrigatória | Descrição |
+|---|---|---|
+| `NEXTAUTH_SECRET` | Sim | Segredo para assinar os tokens JWT do NextAuth |
+| `NEXTAUTH_URL` | Sim | URL base da aplicação (ex: `http://localhost:3000/login`) |
+| `NEXT_PUBLIC_MODE` | Sim | Modo de execução: `dev`, `demo` ou `prod` |
+| `NEXT_PUBLIC_API_DEV_BASE_URL` | Sim | URL base da API em desenvolvimento |
+| `NEXT_PUBLIC_API_DEMO_BASE_URL` | Sim | URL base da API em demonstração |
+| `NEXT_PUBLIC_API_PROD_BASE_URL` | Sim | URL base da API em produção |
 
-To learn more about Next.js, take a look at the following resources:
+A variável `NEXT_PUBLIC_MODE` controla qual URL de API será utilizada em runtime, tanto no cliente quanto no servidor. Os valores aceitos são validados via Zod em `src/env.ts` — a aplicação lanca um erro explícito na inicialização se qualquer variável estiver ausente ou inválida.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Iniciar o servidor de desenvolvimento
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm dev
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Estrutura de Pastas
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── api/                    # Camada de comunicação com a API externa
+│   ├── client.ts           # fetchClient — chamadas no lado do cliente
+│   ├── server.ts           # fetchServer — chamadas no lado do servidor (RSC / Server Actions)
+│   ├── config.ts           # Seleciona a URL base conforme NEXT_PUBLIC_MODE
+│   ├── error.ts            # Classe HandleError — normalização de erros
+│   └── types.ts            # Interfaces compartilhadas de resposta da API
+│
+├── app/
+│   ├── (private)/          # Rotas protegidas (requer autenticação)
+│   │   ├── layout.tsx      # Layout com sidebar e header
+│   │   ├── dashboard/
+│   │   └── events/         # Exemplo de módulo completo (listagem, detalhe, criar, editar)
+│   ├── (public)/           # Rotas públicas (landing page, login)
+│   ├── api/auth/           # Handler do NextAuth
+│   ├── forbidden/          # Página 403
+│   ├── unauthorized/       # Página 401
+│   ├── global-error.tsx    # Error boundary global
+│   ├── globals.css         # Estilos globais e tokens de design
+│   └── layout.tsx          # Layout raiz (providers, metadata, fonte)
+│
+├── assets/                 # Imagens e assets estáticos importáveis
+│
+├── components/
+│   ├── can/                # Controle de acesso por permissão
+│   │   ├── client.tsx      # <CanClient> — uso em Client Components
+│   │   └── server.tsx      # <CanServer> — uso em Server Components
+│   ├── form/
+│   │   ├── containers/     # Wrappers de formulário (Sheet, Global, Step)
+│   │   └── controllers/    # Campos controlados pelo React Hook Form
+│   ├── sidebar/            # Componentes do layout da área privada
+│   ├── pagination/         # Componente de paginação incremental
+│   └── ui/                 # Componentes base do shadcn/ui (não editar diretamente)
+│
+├── domains/                # Lógica de negócio por domínio
+│   ├── auth/               # Login, tipos de usuário, permissões (enums)
+│   ├── events/             # Exemplo: types, client.ts, server.ts, actions.ts
+│   ├── tags/
+│   └── general/
+│
+├── env.ts                  # Validação e exportação das variáveis de ambiente via Zod
+├── fonts.ts                # Configuração das fontes Google (Inter, Unbounded)
+│
+├── hooks/
+│   ├── use-debounce.ts
+│   ├── use-mobile.ts
+│   ├── use-paginated-list.ts   # Hook de listagem infinita com TanStack Query
+│   └── use-server-action.ts    # Hook para Server Actions com feedback automático
+│
+├── lib/
+│   ├── next-auth/auth.ts   # Configuração do NextAuth (authOptions, getServerSession)
+│   ├── shadcn/utils.ts     # Utilitário cn() para merge de classes Tailwind
+│   ├── tanstack-query/     # Configuração do QueryClient, chaves e métodos
+│   └── toast/              # Configuração e wrappers do Sonner
+│
+├── providers/              # Providers React (Auth, Query, Theme)
+│
+├── proxy.ts                # Middleware de autenticação de rotas (proxy.ts = middleware.ts)
+│
+├── types/
+│   ├── next-auth.d.ts      # Extensão de tipos da sessão do NextAuth
+│   └── params.ts           # Tipos de parâmetros de rota (params, searchParams)
+│
+└── utils/
+    ├── date.ts             # Formatação de datas
+    ├── mask.ts             # Máscaras de input
+    ├── permissions.ts      # Mapa de rotas/permissões e funções auxiliares
+    ├── queries.ts          # Codificação de query strings
+    ├── regex.ts            # Padrões de expressão regular reutilizáveis
+    └── text.ts             # Utilitários de texto
+```
+
+---
+
+## Arquitetura de Rotas
+
+O projeto usa **Route Groups** do App Router para separar contextos sem afetar a URL:
+
+- `(public)/` — Rotas acessíveis sem autenticação: `/`, `/login`
+- `(private)/` — Rotas que exigem sessão ativa. O layout deste grupo renderiza a sidebar e o header.
+
+### Proxy (Middleware)
+
+O arquivo `src/proxy.ts` (equivalente ao `middleware.ts` do Next.js) protege as rotas:
+
+```ts
+// src/proxy.ts
+const publicRoutes: PublicRoute[] = [
+  { path: "/login", whenAuthed: "redirect" },   // redireciona para /dashboard se autenticado
+  { path: "/", whenAuthed: "not-redirect" },    // permanece acessível mesmo autenticado
+];
+```
+
+- Usuários **não autenticados** em rotas privadas são redirecionados para `/login`.
+- Usuários **autenticados** em `/login` são redirecionados para `/dashboard`.
+
+Para adicionar novas rotas públicas, inclua-as no array `publicRoutes` de `src/proxy.ts`.
+
+### Convenção de Páginas
+
+Cada rota de um módulo segue o padrão:
+
+```
+app/(private)/[modulo]/
+├── (list)/
+│   ├── page.tsx                    # Listagem
+│   └── components/
+│       ├── [modulo]-list.tsx       # Componente de listagem
+│       ├── loading.tsx             # Skeleton de carregamento
+│       └── helpers.tsx             # Funções auxiliares locais
+├── [id]/
+│   ├── page.tsx                    # Detalhes
+│   ├── loading.tsx
+│   ├── components/
+│   └── update/
+│       ├── page.tsx                # Edição
+│       └── components/
+└── create/
+    ├── page.tsx                    # Criação
+    └── components/
+```
+
+---
+
+## Camada de API
+
+Toda comunicação com a API externa passa **obrigatoriamente** por `src/api/client.ts` ou `src/api/server.ts`. Nunca chame `fetch` diretamente em páginas ou componentes.
+
+### `fetchClient` — Client Components
+
+```ts
+// src/domains/events/client.ts
+import { fetchClient } from "@/api/client";
+
+export async function getEvents(params) {
+  const data = await fetchClient<ApiResponsePaginated<Event[]>>(`/events${queryString}`);
+  return data;
+}
+```
+
+- Obtém o token JWT via `getSession()` (next-auth/react)
+- Realiza logout automático em respostas `401`
+- Lança `HandleError` tipado em respostas `403` e outros erros
+
+### `fetchServer` — Server Components e Server Actions
+
+```ts
+// src/domains/events/server.ts
+import { fetchServer } from "@/api/server";
+
+export async function getEventById(id: string) {
+  const { data } = await fetchServer<ApiResponse<EventDetails>>(`/events/${id}`);
+  return data;
+}
+```
+
+- Obtém o token JWT via `getServerSession()` (next-auth)
+- Redireciona para `/unauthorized` em `401` quando há sessão ativa
+- Usa o `env` validado via Zod para obter a URL base
+
+### Tipos de resposta
+
+```ts
+// src/api/types.ts
+
+interface ApiResponse<T> {
+  status: string;
+  message: string;
+  data: T;
+}
+
+interface ApiResponsePaginated<T> {
+  status: number;
+  message: string;
+  data: T;
+  pagination: Pagination;
+}
+
+interface ApiResponseError {
+  message: string;
+  code: number;
+  status: string;
+  timestamp: string;
+}
+```
+
+---
+
+## Domínios
+
+Cada entidade de negócio possui sua própria pasta em `src/domains/[entidade]/` com os seguintes arquivos:
+
+| Arquivo | Responsabilidade |
+|---|---|
+| `types.ts` | Interfaces e enums TypeScript da entidade |
+| `client.ts` | Funções de leitura para Client Components (usa `fetchClient`) |
+| `server.ts` | Funções de leitura para Server Components (usa `fetchServer`) |
+| `actions.ts` | Server Actions para mutações (POST, PUT, DELETE) com `"use server"` |
+| `enums.ts` | Enumerações específicas do domínio |
+
+### Exemplo: criando um novo domínio
+
+```ts
+// src/domains/products/types.ts
+export interface Product { id: string; name: string; price: number; }
+export interface CreateProduct { name: string; price: number; }
+
+// src/domains/products/server.ts
+import { fetchServer } from "@/api/server";
+import { ApiResponse } from "@/api/types";
+import { Product } from "./types";
+
+export async function getProductById(id: string) {
+  const { data } = await fetchServer<ApiResponse<Product>>(`/products/${id}`);
+  return data;
+}
+
+// src/domains/products/actions.ts
+"use server";
+import { fetchServer } from "@/api/server";
+import { ApiResponse, ApiResponseError } from "@/api/types";
+import { CreateProduct, Product } from "./types";
+
+export async function createProduct(body: CreateProduct) {
+  try {
+    return await fetchServer<ApiResponse<Product>>("/products", { method: "POST", body });
+  } catch (error) {
+    return error as ApiResponseError;
+  }
+}
+```
+
+---
+
+## Autenticação e Sessão
+
+A autenticação é feita via **NextAuth.js v4** com `CredentialsProvider`, utilizando estratégia **JWT**.
+
+- **Duração da sessão:** 7 dias
+- **Página de login:** `/login`
+- **Informações na sessão:** `id`, `email`, `name`, `role`, `permissions`, `token` (JWT da API)
+
+### Acessar a sessão
+
+```ts
+// Em Server Components / Server Actions
+import { getServerSession } from "@/lib/next-auth/auth";
+const session = await getServerSession();
+
+// Em Client Components
+import { useSession } from "next-auth/react";
+const { data: session } = useSession();
+```
+
+> Sempre importe `getServerSession` de `@/lib/next-auth/auth` (wrapper interno), não diretamente do `next-auth`.
+
+### Extensão de tipos
+
+O arquivo `src/types/next-auth.d.ts` estende os tipos padrão da sessão para incluir `role`, `permissions` e `token`. Ao adicionar novos campos ao token JWT, atualize este arquivo.
+
+---
+
+## Controle de Permissões
+
+O sistema usa um enum `Permission` definido em `src/domains/auth/enums.ts`. As permissões são armazenadas na sessão e checadas em tempo de execução.
+
+### Componentes `<Can>`
+
+Use os componentes `<CanServer>` e `<CanClient>` para renderização condicional baseada em permissão:
+
+```tsx
+// Em Server Components
+import { CanServer } from "@/components/can/server";
+import { Permission } from "@/domains/auth/enums";
+
+<CanServer permission={Permission.createEvents}>
+  <Button>Criar evento</Button>
+</CanServer>
+
+// Em Client Components
+import { CanClient } from "@/components/can/client";
+
+<CanClient permission={Permission.deleteEvents} fallback={<span>Sem acesso</span>}>
+  <DeleteButton />
+</CanClient>
+```
+
+Ambos aceitam `permission` como valor único ou array. Quando array, **todas** as permissões precisam estar presentes (lógica `AND`).
+
+### Mapa de rotas e permissões
+
+`src/utils/permissions.ts` mantém o mapeamento entre rotas e permissões necessárias. Ao adicionar um novo módulo, inclua sua entrada neste arquivo:
+
+```ts
+// src/utils/permissions.ts
+export const routePermissionsMap = {
+  "/products": {
+    view: Permission.viewProducts,
+    create: Permission.createProducts,
+    update: Permission.updateProducts,
+    delete: Permission.deleteProducts,
+  },
+};
+```
+
+---
+
+## Gerenciamento de Estado (TanStack Query)
+
+### Query Keys
+
+Todas as chaves de query são centralizadas no enum `QueryKeys` em `src/lib/tanstack-query/keys.ts`. Nunca use strings avulsas como chave de query.
+
+```ts
+// src/lib/tanstack-query/keys.ts
+export enum QueryKeys {
+  EventsList = "events-list",
+  EventDetails = "event-details",
+  ProductsList = "products-list",  // adicione aqui ao criar novos módulos
+}
+```
+
+### Listagem com paginação incremental
+
+Use o hook `usePaginatedList` para listas com "carregar mais":
+
+```tsx
+import { usePaginatedList } from "@/hooks/use-paginated-list";
+import { QueryKeys } from "@/lib/tanstack-query/keys";
+import { getEvents } from "@/domains/events/client";
+
+const { items, total, currentTotal, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  usePaginatedList({
+    queryKey: [QueryKeys.EventsList],
+    queryFn: ({ pageParam }) => getEvents({ page: pageParam }),
+  });
+```
+
+### Invalidar/refazer queries após mutação
+
+```ts
+import { refetchQuery } from "@/lib/tanstack-query/methods";
+import { QueryKeys } from "@/lib/tanstack-query/keys";
+
+await refetchQuery([QueryKeys.EventsList]);
+```
+
+---
+
+## Formulários
+
+Todos os formulários usam **React Hook Form** com campos controlados da pasta `src/components/form/controllers/`.
+
+### Hook `useServerAction`
+
+Wrapper sobre `useMutation` do TanStack Query que integra automaticamente o feedback de toast (sucesso/erro) com Server Actions:
+
+```tsx
+import { useServerAction } from "@/hooks/use-server-action";
+import { createEvent } from "@/domains/events/actions";
+
+const { mutateAsync, isPending } = useServerAction<Event, CreateEvent>({
+  mutationFn: (data) => createEvent(data),
+  onSuccess: async () => {
+    await refetchQuery([QueryKeys.EventsList]);
+    router.back();
+  },
+  // successMessage e errorMessage são opcionais; por padrão usa a mensagem retornada pela API
+});
+```
+
+### Controladores disponíveis
+
+| Componente | Uso |
+|---|---|
+| `ControlledInput` | Campo de texto simples |
+| `ControlledTextarea` | Área de texto |
+| `ControlledSelect` | Seleção única |
+| `ControlledMultiSelect` | Seleção múltipla |
+| `ControlledCombobox` | Combobox com busca |
+| `ControlledCheckbox` | Checkbox |
+| `ControlledSwitch` | Toggle switch |
+| `ControlledDatePicker` | Seletor de data |
+| `ControlledDateTimePicker` | Seletor de data e hora |
+| `ControlledImages` | Upload de imagem(ns) |
+| `ControlledInputCurrency` | Campo monetário |
+| `ControlledArrayInput` | Lista de inputs dinâmicos |
+
+Todos recebem `name`, `control` e `rules` (regras do React Hook Form).
+
+### Containers de formulário
+
+- `GlobalForm` — Wrapper padrão para formulários de página inteira
+- `FormSheet` — Formulário dentro de um `Sheet` lateral
+- `StepProgressBar` — Formulário multi-etapas com barra de progresso
+
+---
+
+## Componentes de UI
+
+Os componentes em `src/components/ui/` são provenientes do **shadcn/ui** e não devem ser editados diretamente. Para customizações, crie um componente wrapper.
+
+Para adicionar novos componentes do shadcn:
+
+```bash
+pnpm dlx shadcn@latest add [component-name]
+```
+
+---
+
+## Hooks Customizados
+
+| Hook | Descrição |
+|---|---|
+| `useServerAction` | Mutações com Server Actions + toast automático |
+| `usePaginatedList` | Listagem infinita com TanStack Query |
+| `useDebounce` | Debounce de valor para buscas |
+| `useMobile` | Detecta se o viewport é mobile |
+
+---
+
+## Utilitários
+
+| Arquivo | Funções exportadas |
+|---|---|
+| `utils/date.ts` | Formatação de datas com `date-fns` e suporte a timezone |
+| `utils/mask.ts` | Máscaras de CPF, CNPJ, telefone, CEP |
+| `utils/permissions.ts` | `hasPermission`, `getRoutePermission`, `routePermissionsMap`, `permissionsModules` |
+| `utils/queries.ts` | `encodeQueryString` — monta query strings sem parâmetros nulos |
+| `utils/regex.ts` | Padrões regex: URL, Instagram, Facebook, email, etc. |
+| `utils/text.ts` | Utilitários de manipulação de strings |
+| `lib/shadcn/utils.ts` | `cn()` — merge de classes Tailwind com `clsx` + `tailwind-merge` |
+
+---
+
+## Estilização e Temas
+
+### Tokens de design
+
+As variáveis CSS são definidas em `src/app/globals.css` usando `oklch`. O projeto suporta modo claro e escuro via `next-themes`.
+
+Os tokens seguem o padrão do shadcn/ui: `--background`, `--foreground`, `--primary`, `--secondary`, `--muted`, `--destructive`, `--success`, `--warning`, `--info`, `--border`, `--ring`, entre outros.
+
+### Tipografia
+
+Fontes configuradas em `src/fonts.ts`:
+
+- **Inter** — Fonte padrão do corpo (`font-sans`)
+- **Unbounded** — Fonte de destaque/títulos (variável `--font-unbounded`)
+
+### Responsividade
+
+O `globals.css` inclui breakpoints globais de fonte:
+
+- `≤ 1550px` → `font-size: 90%`
+- `≤ 1000px` → `font-size: 85%`
+
+---
+
+## Convenções de Código
+
+### Nomenclatura de arquivos
+
+- Componentes React: `kebab-case.tsx` (ex: `events-list.tsx`)
+- Hooks: `use-nome-do-hook.ts`
+- Utilitários e funções: `kebab-case.ts`
+- Enums e tipos: `types.ts` / `enums.ts` dentro do domínio
+
+### Nomenclatura de funções e variáveis
+
+- Funções: `camelCase` (ex: `getEventById`, `createEvent`)
+- Componentes: `PascalCase` (ex: `EventsList`, `CanServer`)
+- Constantes e enums: `PascalCase` para o enum, `camelCase` para variáveis
+
+### Imports
+
+Use sempre o alias `@/` para imports absolutos:
+
+```ts
+// Correto
+import { fetchServer } from "@/api/server";
+
+// Incorreto
+import { fetchServer } from "../../api/server";
+```
+
+### Separação de responsabilidades
+
+| Camada | Onde fica | Regra |
+|---|---|---|
+| Busca server-side | `domains/[entidade]/server.ts` | Usa `fetchServer`, chamado em RSC |
+| Busca client-side | `domains/[entidade]/client.ts` | Usa `fetchClient`, chamado via TanStack Query |
+| Mutações | `domains/[entidade]/actions.ts` | `"use server"`, chamado via `useServerAction` |
+| Lógica de UI | `app/[rota]/components/` | Componentes específicos da página |
+| Componentes reutilizáveis | `components/` | Sem lógica de domínio |
+
+### Formatação
+
+O projeto usa **Prettier**. O build (`pnpm build`) executa a formatação automaticamente. Para verificar manualmente:
+
+```bash
+pnpm format        # verifica
+pnpm format:fix    # corrige
+```
+
+---
+
+## Scripts Disponíveis
+
+| Script | Descrição |
+|---|---|
+| `pnpm dev` | Inicia o servidor de desenvolvimento com Turbopack |
+| `pnpm build` | Formata o código e gera o build de produção |
+| `pnpm start` | Inicia o servidor de produção |
+| `pnpm lint` | Executa o ESLint |
+| `pnpm format` | Verifica a formatação com Prettier |
+| `pnpm format:fix` | Corrige a formatação com Prettier |
