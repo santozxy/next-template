@@ -1,0 +1,76 @@
+import { env } from "@/env";
+import { authOptions } from "@/lib/next-auth/auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { ApiResponseError } from "./types";
+import { HandleError } from "./error";
+
+const configURL = () => {
+  switch (env.NEXT_PUBLIC_MODE) {
+    case "prod":
+      return env.NEXT_PUBLIC_API_PROD_BASE_URL;
+    case "dev":
+      return env.NEXT_PUBLIC_API_DEV_BASE_URL;
+    case "demo":
+    default:
+      return env.NEXT_PUBLIC_API_DEMO_BASE_URL;
+  }
+};
+
+export async function fetchServer<T>(
+  path: string,
+  options?: Omit<RequestInit, "body"> & { body?: object }
+) {
+  const session = await getServerSession(authOptions);
+  const jwt = session?.user?.token || "";
+  const baseUrl = configURL();
+  const url = `${baseUrl}${path}`;
+
+  const headers = {
+    Accept: "application/json",
+    ...(jwt && { Authorization: `Bearer ${jwt}` }),
+    ...options?.headers,
+    ...(options?.body && { "Content-Type": "application/json" }),
+  };
+
+  const response = await fetch(url, {
+    headers,
+    ...options,
+    body: options?.body ? JSON.stringify(options.body) : undefined,
+  }).catch(() => {
+    throw new HandleError({
+      message:
+        "Não foi possível conectar ao servidor. Verifique sua conexão com a internet e tente novamente.",
+      status: "error",
+      code: 500,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  const data: T = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      if (jwt) {
+        redirect("/unauthorized");
+      }
+    }
+    const errorData = data as ApiResponseError;
+    if (options?.method !== "GET") {
+      throw {
+        message: errorData?.message,
+        status: errorData?.status,
+        code: errorData?.code,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    throw new HandleError({
+      message: errorData?.message || "Erro ao processar a requisição.",
+      status: errorData?.status || "error",
+      code: errorData?.code || response.status,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  return data;
+}
