@@ -1,11 +1,11 @@
-// import { Permission } from "./enums";
+import { Permission } from "./enums";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   role: string;
-  // permissions: Permission[];
+  permissions: Permission[];
 }
 
 export interface UserDetails extends User {

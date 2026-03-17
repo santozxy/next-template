@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const envSchema = z.object({
+  NEXTAUTH_SECRET: z.string().nonempty("Env NEXTAUTH_SECRET é obrigatória"),
   NEXT_PUBLIC_API_PROD_BASE_URL: z
     .string()
     .nonempty("Env API_PROD_BASE_URL é obrigatória"),
@@ -10,8 +11,12 @@ export const envSchema = z.object({
   NEXT_PUBLIC_API_DEMO_BASE_URL: z
     .string()
     .nonempty("Env API_DEMO_BASE_URL é obrigatória"),
-  NEXT_PUBLIC_MODE: z.enum(["prod", "dev", "demo"]),
-  NEXTAUTH_SECRET: z.string().nonempty("Env NEXTAUTH_SECRET é obrigatória"),
+  NEXT_PUBLIC_MODE: z
+    .string()
+    .nonempty("Env MODE é obrigatória")
+    .refine((value) => {
+      return ["prod", "dev", "demo"].includes(value);
+    }, "Env MODE deve ser 'prod', 'dev' ou 'demo'"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useCallback, useState, KeyboardEvent } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
+import { KeyboardEvent, useCallback, useState } from "react";
 import {
   Controller,
   type FieldValues,
   type UseControllerProps,
 } from "react-hook-form";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
 
 interface ControlledArrayInputProps<FormType extends FieldValues>
   extends UseControllerProps<FormType> {

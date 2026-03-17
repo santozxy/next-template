@@ -1,16 +1,16 @@
 "use client";
 
-import type { ReactNode } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/shadcn/utils";
+import type { ReactNode } from "react";
 import { LoadMore } from "./load-more";
 
 /** Describes how a single column is mapped from the data to the table. */

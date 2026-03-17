@@ -1,4 +1,4 @@
-import { login } from "@/domains/auth/requests/actions";
+import { login } from "@/domains/auth/actions";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession as getSession } from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -20,7 +20,6 @@ export const authOptions: NextAuthOptions = {
           email: credentials.email,
           password: credentials.password,
         });
-        console.log("auth", auth);
 
         return {
           id: auth.user.id,
@@ -28,7 +27,6 @@ export const authOptions: NextAuthOptions = {
           name: auth.user.name,
           role: auth.user.role,
           permissions: auth.user.permissions,
-          municipality: auth.user.municipality,
           token: auth.token,
         };
       },
@@ -42,7 +40,6 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.role = user.role;
         token.permissions = user.permissions;
-        token.municipality = user.municipality;
         token.token = user.token;
       }
       return token;
@@ -53,7 +50,6 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.name = token.name;
         session.user.role = token.role;
-        session.user.municipality = token.municipality;
         session.user.permissions = token.permissions;
         session.user.token = token.token;
       }
@@ -70,11 +66,11 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export function getServerSession() {
+export async function getServerSession() {
   return getSession(authOptions);
 }
 
-export async function getPermissionsFromSession() {
-  const session = await getServerSession();
-  return session?.user?.permissions || [];
-}
+// export async function getPermissionsFromSession() {
+//   const session = await getServerSession();
+//   return session?.user?.permissions || [];
+// }

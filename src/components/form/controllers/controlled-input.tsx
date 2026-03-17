@@ -14,7 +14,7 @@ import {
   applyMask,
   mask,
   removeMask,
-} from "@/utils/text/mask";
+} from "@/utils/mask";
 import { useCallback, useMemo } from "react";
 
 interface ControlledInputProps<FormType extends FieldValues>
