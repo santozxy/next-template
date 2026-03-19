@@ -20,7 +20,7 @@ interface ActionDeleteProps<TArgs = void> {
   /** Nome do item (para mensagens no toast) */
   name?: string;
   /** Queries para revalidar após sucesso */
-  revalidateQueries?: string[];
+  revalidateQueries?: readonly unknown[];
   /** Desabilita o botão */
   disabled?: boolean;
   /** Mensagens customizáveis */

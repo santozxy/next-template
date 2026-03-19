@@ -24,7 +24,7 @@ import { deleteEvent } from "@/domains/events/actions";
 import { getEvents } from "@/domains/events/client";
 import { Event } from "@/domains/events/types";
 import { usePaginatedList } from "@/hooks/use-paginated-list";
-import { QueryKeys } from "@/lib/tanstack-query/keys";
+import { queryKeys } from "@/lib/tanstack-query/keys";
 import { Edit, Eye, SearchCheck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,7 +32,6 @@ import { columns } from "./helpers";
 import { EventsListLoading } from "./loading";
 
 export function EventsList() {
-  const limit = 10;
   const [search, setSearch] = useState("");
   const municipalityId = undefined; // Apenas simplificando exemplo
 
@@ -46,9 +45,9 @@ export function EventsList() {
     total,
     currentTotal,
   } = usePaginatedList({
-    queryKey: [QueryKeys.EventsList, search, municipalityId],
+    queryKey: [queryKeys.events.list({ search, municipalityId })],
     queryFn: ({ pageParam: page }) =>
-      getEvents({ page, limit, search, municipalityId }),
+      getEvents({ page, search, municipalityId }),
   });
 
 
@@ -126,7 +125,7 @@ export function EventsList() {
                       onDelete={async () => {
                         await deleteEvent(event.id);
                       }}
-                      revalidateQueries={[QueryKeys.EventsList]}
+                      revalidateQueries={queryKeys.events.lists()}
                     />
                   </CanClient>
                 </>

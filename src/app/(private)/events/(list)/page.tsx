@@ -1,5 +1,4 @@
 import Link from "next/link";
-import React from "react";
 import { EventsList } from "./components/events-list";
 import { Button } from "@/components/ui/button";
 import { CanServer } from "@/components/can/server";

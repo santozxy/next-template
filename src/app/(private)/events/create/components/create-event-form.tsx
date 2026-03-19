@@ -13,7 +13,7 @@ import { CreateEvent, Event, PriceType } from "@/domains/events/types";
 import { getTags } from "@/domains/tags/client";
 import { TagsType } from "@/domains/tags/enums";
 import { useServerAction } from "@/hooks/use-server-action";
-import { QueryKeys } from "@/lib/tanstack-query/keys";
+import { queryKeys } from "@/lib/tanstack-query/keys";
 import { refetchQuery } from "@/lib/tanstack-query/methods";
 import { regexPatterns } from "@/utils/regex";
 import { useQuery } from "@tanstack/react-query";
@@ -46,13 +46,13 @@ export function CreateEventForm() {
   const { mutateAsync, isPending } = useServerAction<Event, CreateEvent>({
   mutationFn: (data) => createEvent(data),
   onSuccess: async () => {
-     await refetchQuery([QueryKeys.EventsList]);
+     await refetchQuery(queryKeys.events.lists());
     router.back();
   },
   });
 
   const { data: tags, isLoading: isLoadingTags } = useQuery({
-    queryKey: [QueryKeys.Tags, TagsType.event],
+    queryKey: queryKeys.tags.list(TagsType.event),
     queryFn: () => getTags([TagsType.event]),
   });
 
