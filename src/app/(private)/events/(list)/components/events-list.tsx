@@ -45,7 +45,7 @@ export function EventsList() {
     total,
     currentTotal,
   } = usePaginatedList({
-    queryKey: [queryKeys.events.list({ search, municipalityId })],
+    queryKey: queryKeys.events.list({ search, municipalityId }),
     queryFn: ({ pageParam: page }) =>
       getEvents({ page, search, municipalityId }),
   });
@@ -131,7 +131,6 @@ export function EventsList() {
                 </>
               )}
             />
-
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         )}

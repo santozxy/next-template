@@ -394,14 +394,17 @@ export const routePermissionsMap = {
 
 ### Query Keys
 
-Todas as chaves de query são centralizadas no enum `QueryKeys` em `src/lib/tanstack-query/keys.ts`. Nunca use strings avulsas como chave de query.
+Todas as chaves de query são centralizadas em `src/lib/tanstack-query/keys.ts`.
 
 ```ts
 // src/lib/tanstack-query/keys.ts
-export enum QueryKeys {
-  EventsList = "events-list",
-  EventDetails = "event-details",
-  ProductsList = "products-list",  // adicione aqui ao criar novos módulos
+const eventsKeys = {
+  all: ["events"] as const,
+  lists: () => [...eventsKeys.all, "list"] as const,
+  list: (params?: Record<string, unknown>) =>
+    [...eventsKeys.lists(), params ?? {}] as const,
+  details: () => [...eventsKeys.all, "detail"] as const,
+  detail: (id: string) => [...eventsKeys.details(), id] as const,
 }
 ```
 
@@ -411,12 +414,12 @@ Use o hook `usePaginatedList` para listas com "carregar mais":
 
 ```tsx
 import { usePaginatedList } from "@/hooks/use-paginated-list";
-import { QueryKeys } from "@/lib/tanstack-query/keys";
+import { queryKey } from "@/lib/tanstack-query/keys";
 import { getEvents } from "@/domains/events/client";
 
 const { items, total, currentTotal, fetchNextPage, hasNextPage, isFetchingNextPage } =
   usePaginatedList({
-    queryKey: [QueryKeys.EventsList],
+    queryKey: [queryKey.events.list(params)],
     queryFn: ({ pageParam }) => getEvents({ page: pageParam }),
   });
 ```
@@ -425,9 +428,9 @@ const { items, total, currentTotal, fetchNextPage, hasNextPage, isFetchingNextPa
 
 ```ts
 import { refetchQuery } from "@/lib/tanstack-query/methods";
-import { QueryKeys } from "@/lib/tanstack-query/keys";
+import { queryKey } from "@/lib/tanstack-query/keys";
 
-await refetchQuery([QueryKeys.EventsList]);
+await refetchQuery([queryKey.events.lists()]);
 ```
 
 ---
@@ -447,7 +450,7 @@ import { createEvent } from "@/domains/events/actions";
 const { mutateAsync, isPending } = useServerAction<Event, CreateEvent>({
   mutationFn: (data) => createEvent(data),
   onSuccess: async () => {
-    await refetchQuery([QueryKeys.EventsList]);
+    await refetchQuery([queryKeys.events.lists()]);
     router.back();
   },
   // successMessage e errorMessage são opcionais; por padrão usa a mensagem retornada pela API

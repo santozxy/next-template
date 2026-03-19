@@ -32,7 +32,7 @@ export function Hero() {
         {/* CTA buttons */}
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild size="lg" className="gap-2">
-            <Link href="https://github.com" target="_blank">
+            <Link href="https://github.com/syslae-solutions/next-template" target="_blank">
               <Github className="h-5 w-5" />
               Ver no GitHub
             </Link>
