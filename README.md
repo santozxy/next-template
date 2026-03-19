@@ -390,7 +390,7 @@ export const routePermissionsMap = {
 
 ---
 
-## Gerenciamento de Estado (TanStack Query)
+## Gerenciamento de Estado em APIs (TanStack Query)
 
 ### Query Keys
 
@@ -456,6 +456,8 @@ const { mutateAsync, isPending } = useServerAction<Event, CreateEvent>({
   // successMessage e errorMessage são opcionais; por padrão usa a mensagem retornada pela API
 });
 ```
+
+## Gerenciamento de Estado Local Persistente (Zustand + LocalStorage)
 
 ### Controladores disponíveis
 
