@@ -1,4 +1,4 @@
-// import { Permission } from "@/domains/auth/enums";
+import { Permission, Role } from "@/domains/auth/enums";
 import "next-auth";
 
 declare module "next-auth" {
@@ -6,7 +6,7 @@ declare module "next-auth" {
     id: string;
     email: string;
     name: string;
-    role: string;
+    role: Role;
     permissions: Permission[];
     token: string;
   }
@@ -21,7 +21,7 @@ declare module "next-auth/jwt" {
     id: string;
     email: string;
     name: string;
-    role: string;
+    role: Role;
     permissions: Permission[];
     token: string;
   }

@@ -1,3 +1,8 @@
+export enum Role {
+  admin = "admin",
+  member = "member",
+}
+
 export enum Permission {
   all = "all",
   // User permissions

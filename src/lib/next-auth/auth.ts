@@ -1,4 +1,5 @@
 import { login } from "@/domains/auth/actions";
+import { Permission, Role } from "@/domains/auth/enums";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession as getSession } from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -20,13 +21,15 @@ export const authOptions: NextAuthOptions = {
           email: credentials.email,
           password: credentials.password,
         });
+        const permissions =
+          auth.user.role === Role.admin ? [Permission.all] : [];
 
         return {
           id: auth.user.id,
           email: auth.user.email,
           name: auth.user.name,
           role: auth.user.role,
-          permissions: auth.user.permissions,
+          permissions,
           token: auth.token,
         };
       },
@@ -70,8 +73,7 @@ export async function getServerSession() {
   return getSession(authOptions);
 }
 
-
- export async function getPermissionsFromSession() {
-   const session = await getServerSession();
-   return session?.user?.permissions || [];
- }
+export async function getPermissionsFromSession() {
+  const session = await getServerSession();
+  return session?.user?.permissions || [];
+}

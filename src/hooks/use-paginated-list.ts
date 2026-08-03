@@ -23,7 +23,7 @@ export function usePaginatedList<T>({
   const queryPaginated = useInfiniteQuery<
     ApiResponsePaginated<T[]>,
     Error,
-    InfiniteData<ApiResponsePaginated<T>, number>,
+    InfiniteData<ApiResponsePaginated<T[]>, number>,
     QueryKey,
     number
   >({

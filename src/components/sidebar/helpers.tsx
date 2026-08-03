@@ -1,15 +1,12 @@
 import { Permission } from "@/domains/auth/enums";
 import { hasPermission } from "@/utils/permissions";
-import {
-  LayoutDashboard,
-  Users
-} from "lucide-react";
+import { LayoutDashboard, Users } from "lucide-react";
 
 export const identifierLinks: { [key: string]: string } = {
   "/dashboard": "Dashboard",
-  "/events": "Eventos",
-  "/events/create": "Adicionar evento",
-  "/events/[id]/update": "Editar evento",
+  "/users": "Usuários",
+  "/users/create": "Adicionar usuário",
+  "/users/[id]/update": "Editar usuário",
 };
 
 export interface NavItem {
@@ -26,11 +23,10 @@ export const navItems: NavItem[] = [
     href: "/dashboard",
     requiredPermissions: [],
   },
-
   {
-    title: "Eventos",
+    title: "Usuários",
     icon: <Users />,
-    href: "/events",
+    href: "/users",
     requiredPermissions: [],
   },
 ];
@@ -42,7 +38,7 @@ export function getAccessibleNavItems(userPermissions: Permission[]) {
     (item) =>
       item.requiredPermissions.length === 0 ||
       item.requiredPermissions.some((perm) =>
-        hasPermission(userPermissions, perm),
-      ),
+        hasPermission(userPermissions, perm)
+      )
   );
 }

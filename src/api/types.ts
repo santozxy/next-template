@@ -12,7 +12,7 @@ export interface ApiResponse<T> {
 }
 
 export interface ApiResponsePaginated<T> {
-  status: number;
+  status: string;
   message: string;
   data: T;
   pagination: Pagination;
@@ -20,7 +20,7 @@ export interface ApiResponsePaginated<T> {
 
 export interface Pagination {
   lastPage: number;
-  limit: number;
+  perPage: number;
   total: number;
   page: number;
 }

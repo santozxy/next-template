@@ -3,7 +3,7 @@
 import { ControlledInput } from "@/components/form/controllers/controlled-input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Credentials } from "@/domains/auth/actions";
+import { Credentials } from "@/domains/auth/types";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ export function LoginForm() {
       process.env.NEXT_PUBLIC_MODE === "dev"
     ) {
       reset({
-        email: "suportesyslae@admin.com",
+        email: "admin@syslae.com",
         password: "password",
       });
     }
