@@ -10,3 +10,13 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateUser {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  role: Role;
+}
+
+export type UpdateUser = Partial<CreateUser>;

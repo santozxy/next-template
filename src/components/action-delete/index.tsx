@@ -63,14 +63,15 @@ export function ActionDelete<TArgs = void>({
     <>
       {/* Botão de ação visualmente igual aos outros (ícone dentro da tabela) */}
       <Button
-        variant="ghost"
+     
         onClick={handleDelete}
         disabled={disabled || isPending}
-        className={
-          "text-destructive hover:text-destructive/80 border-border flex h-7 w-7 items-center gap-2 rounded-sm border p-1 transition"
-        }
+      variant="outline"
+            size="icon"
+            className="h-8 w-8 sm:hover:bg-transparent"
+            title="Excluir"
       >
-        <Trash2 className="h-4.5 w-4.5" />
+        <Trash2 className="h-4.5 w-4.5 text-destructive" />
       </Button>
 
       {/* Dialog de confirmação */}
