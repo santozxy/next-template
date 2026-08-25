@@ -22,12 +22,11 @@ export function Nav({ permissions }: NavProps) {
             <Link
               prefetch={true}
               href={item.href}
-              className={`flex items-center gap-3 flex-row rounded-lg py-2 text-muted-foreground hover:bg-secondary/50 
-                      ${
-                        pathname === item.href
-                          ? "bg-secondary/50 text-primary font-medium"
-                          : ""
-                      }`}
+              className={`text-muted-foreground hover:bg-secondary/50 flex flex-row items-center gap-3 rounded-lg py-2 ${
+                pathname === item.href
+                  ? "bg-secondary/50 text-primary font-medium"
+                  : ""
+              }`}
             >
               {item.icon}
               <span>{item.title}</span>

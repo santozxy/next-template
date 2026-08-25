@@ -31,7 +31,7 @@ export function UsersTable() {
     currentTotal,
   } = usePaginatedList<User>({
     queryKey: queryKeys.users.list(),
-    queryFn: ({ pageParam: page }) => getUsers({ page }),
+    queryFn: ({ page }) => getUsers({ page }),
   });
 
   return (

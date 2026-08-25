@@ -3,23 +3,13 @@
 import { ControlledInput } from "@/components/form/controllers/controlled-input";
 import { ControlledSelect } from "@/components/form/controllers/controlled-select";
 import { Button } from "@/components/ui/button";
-import { Role } from "@/domains/auth/enums";
 import { updateUser } from "@/domains/users/actions";
-import { CreateUser, UpdateUser, User } from "@/domains/users/types";
+import { UpdateUser, User } from "@/domains/users/types";
 import { useServerAction } from "@/hooks/use-server-action";
-import { queryClient } from "@/lib/tanstack-query/client";
 import { queryKeys } from "@/lib/tanstack-query/keys";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-
-const roleOptions = [
-  { id: Role.admin, name: "Administrador" },
-  { id: Role.member, name: "Membro" },
-];
-
-type UpdateUserFormValues = Omit<CreateUser, "password"> & {
-  password?: string;
-};
+import { roleOptions } from "./helpers";
 
 interface UpdateUserFormProps {
   user: User;
@@ -29,7 +19,7 @@ interface UpdateUserFormProps {
 export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const { data: session } = useSession();
   const isCurrentUser = session?.user.id === user.id;
-  const { control, handleSubmit } = useForm<UpdateUserFormValues>({
+  const { control, handleSubmit } = useForm<UpdateUser>({
     defaultValues: {
       name: user.name,
       email: user.email,
@@ -39,24 +29,18 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
     },
   });
 
-  const { mutateAsync, isPending } = useServerAction<
-    User,
-    UpdateUserFormValues
-  >({
-    mutationFn: (values) => {
+  const { mutateAsync, isPending } = useServerAction({
+    mutationFn: (values: UpdateUser) => {
       const { password, ...data } = values;
       const body: UpdateUser = {
         ...data,
         ...(password ? { password } : {}),
       };
-
       return updateUser(user.id, body);
     },
     successMessage: "Usuário atualizado com sucesso.",
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
-      onSuccess?.();
-    },
+    onSuccess: async () => onSuccess?.(),
+    invalidateQueries: [queryKeys.users.all],
   });
 
   return (

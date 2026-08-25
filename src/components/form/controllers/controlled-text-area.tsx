@@ -69,15 +69,15 @@ export function ControlledTextarea<FormType extends FieldValues>({
                   textareaProps.className || ""
                 }`}
               />
-              <div className="flex items-center justify-between mt-1">
+              <div className="mt-1 flex items-center justify-between">
                 {error?.message && (
-                  <p className="text-destructive  w-full text-sm">
+                  <p className="text-destructive w-full text-sm">
                     {error.message}
                   </p>
                 )}
                 {limit && (
                   <div
-                    className={` flex justify-end ${
+                    className={`flex justify-end ${
                       error?.message ? "" : "w-full"
                     }`}
                   >

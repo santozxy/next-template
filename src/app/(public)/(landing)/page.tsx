@@ -1,7 +1,7 @@
-import { Hero } from "./components/hero"
-import { Features } from "./components/features"
-import { Started } from "./components/started"
-import { Footer } from "./components/footer"
+import { Hero } from "./components/hero";
+import { Features } from "./components/features";
+import { Started } from "./components/started";
+import { Footer } from "./components/footer";
 
 export default function LandingPage() {
   return (
@@ -11,5 +11,5 @@ export default function LandingPage() {
       <Started />
       <Footer />
     </main>
-  )
+  );
 }

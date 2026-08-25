@@ -47,7 +47,7 @@ function CustomToast({
           "bg-blue-50/50 dark:bg-blue-900/30": type === "info",
           "bg-yellow-50/50 dark:bg-yellow-900/30": type === "warning",
           "bg-gray-50/50 dark:bg-gray-900/30": type === "loading",
-        },
+        }
       )}
     >
       <div className="mt-0.5">{icons[type]}</div>
@@ -67,13 +67,13 @@ export const toast = {
       () => (
         <CustomToast type="success" title="Sucesso" description={description} />
       ),
-      options,
+      options
     ),
 
   error: (description = "Ops! Algo deu errado.", options?: ToastOptions) =>
     sonnerToast.custom(
       () => <CustomToast type="error" title="Erro" description={description} />,
-      options,
+      options
     ),
 
   info: (description = "Aqui vai uma informação.", options?: ToastOptions) =>
@@ -81,7 +81,7 @@ export const toast = {
       () => (
         <CustomToast type="info" title="Informação" description={description} />
       ),
-      options,
+      options
     ),
 
   warning: (description = "Atenção necessária.", options?: ToastOptions) =>
@@ -89,7 +89,7 @@ export const toast = {
       () => (
         <CustomToast type="warning" title="Atenção" description={description} />
       ),
-      options,
+      options
     ),
 
   loading: (description = "Carregando...", options?: ToastOptions) =>
@@ -101,6 +101,6 @@ export const toast = {
           description={description}
         />
       ),
-      { duration: Infinity, ...options },
+      { duration: Infinity, ...options }
     ),
 };

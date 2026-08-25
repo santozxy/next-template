@@ -6,7 +6,7 @@ export default function LoginPage() {
       <div className="bg-card border-border w-full max-w-md space-y-6 rounded-xl border p-8 shadow-lg transition-all duration-300 hover:shadow-xl md:p-10">
         <div className="mb-8 flex flex-col items-center gap-3 transition-opacity hover:opacity-90">
           <div className="flex items-center">
-            <h1 className="text-4xl font-bold text-primary">Next</h1>
+            <h1 className="text-primary text-4xl font-bold">Next</h1>
             <h1 className="text-4xl font-bold">Template</h1>
           </div>
         </div>

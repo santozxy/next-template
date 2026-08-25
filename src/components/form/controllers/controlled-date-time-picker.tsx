@@ -70,7 +70,7 @@ export function ControlledDateTimePicker<FormType extends FieldValues>({
                 month,
                 day,
                 current.getHours(),
-                current.getMinutes(),
+                current.getMinutes()
               );
               const offset = newDate.getTimezoneOffset() * 60000;
               const isoDate = new Date(newDate.getTime() - offset);
@@ -91,7 +91,7 @@ export function ControlledDateTimePicker<FormType extends FieldValues>({
 
         function handleTimeChange(
           type: "hour" | "minute" | "second",
-          val: number,
+          val: number
         ) {
           const currentDate = displayDate || new Date();
           const year = currentDate.getFullYear();
@@ -126,7 +126,7 @@ export function ControlledDateTimePicker<FormType extends FieldValues>({
                   className={cn(
                     "flex w-full flex-row justify-between",
                     !value && "text-muted-foreground",
-                    error ? "border-destructive" : "",
+                    error ? "border-destructive" : ""
                   )}
                 >
                   {displayDate ? (
@@ -196,7 +196,7 @@ export function ControlledDateTimePicker<FormType extends FieldValues>({
                               >
                                 {minute.toString().padStart(2, "0")}
                               </Button>
-                            ),
+                            )
                           )}
                         </div>
                         <ScrollBar

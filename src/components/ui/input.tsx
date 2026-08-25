@@ -26,7 +26,7 @@ function Input({
         <span
           className={cn(
             "text-muted-foreground absolute top-1/2 -translate-y-1/2",
-            iconPosition === "left" ? "left-3" : "right-3",
+            iconPosition === "left" ? "left-3" : "right-3"
           )}
         >
           {icon}
@@ -42,7 +42,7 @@ function Input({
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
           hasIcon && (iconPosition === "left" ? "pr-3 pl-9" : "pr-9 pl-3"),
           isPassword && "pr-10", // espaço para o botão do olho
-          className,
+          className
         )}
         {...props}
       />

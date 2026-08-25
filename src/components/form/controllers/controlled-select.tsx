@@ -20,8 +20,9 @@ interface SelectOption {
   iconUrl?: string; // opcional: para exibir imagem
 }
 
-interface ControlledSelectProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType> {
+interface ControlledSelectProps<
+  FormType extends FieldValues,
+> extends UseControllerProps<FormType> {
   label: string;
   placeholder: string;
   options?: SelectOption[];

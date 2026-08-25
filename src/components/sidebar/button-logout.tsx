@@ -27,7 +27,11 @@ export function ButtonLogout({ showDialog = true }: ButtonLogoutProps) {
 
   if (!showDialog) {
     return (
-      <Button variant="secondary" className="items-center flex justify-center w-full" onClick={logout}>
+      <Button
+        variant="secondary"
+        className="flex w-full items-center justify-center"
+        onClick={logout}
+      >
         Sair
       </Button>
     );
@@ -36,9 +40,13 @@ export function ButtonLogout({ showDialog = true }: ButtonLogoutProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" className="items-center flex justify-center w-full" onClick={logout}>
-        Sair
-      </Button>
+        <Button
+          variant="ghost"
+          className="flex w-full items-center justify-center"
+          onClick={logout}
+        >
+          Sair
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogDescription>Confirmação</AlertDialogDescription>

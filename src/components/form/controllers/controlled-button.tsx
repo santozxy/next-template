@@ -15,8 +15,9 @@ interface ButtonOption {
   name: string;
 }
 
-interface ControlledButtonProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType> {
+interface ControlledButtonProps<
+  FormType extends FieldValues,
+> extends UseControllerProps<FormType> {
   label: string;
   options?: ButtonOption[];
   className?: string;

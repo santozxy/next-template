@@ -1,4 +1,3 @@
-
 export const formatPrice = (min: number | null, max: number | null) => {
   if (!min && !max) return null;
   if (min && max) return `R$ ${min} - R$ ${max}`;

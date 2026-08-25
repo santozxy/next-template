@@ -9,8 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { refetchQuery } from "@/lib/tanstack-query/methods";
+import { invalidateQuery, refetchQuery } from "@/lib/tanstack-query/methods";
 import { toast } from "@/lib/toast";
+import type { QueryKey } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 
@@ -21,6 +22,8 @@ interface ActionDeleteProps<TArgs = void> {
   name?: string;
   /** Queries para revalidar após sucesso */
   revalidateQueries?: readonly unknown[];
+  /** Queries para invalidar após sucesso */
+  invalidateQueries?: readonly QueryKey[];
   /** Desabilita o botão */
   disabled?: boolean;
   /** Mensagens customizáveis */
@@ -32,6 +35,7 @@ export function ActionDelete<TArgs = void>({
   onDelete,
   name = "item",
   revalidateQueries,
+  invalidateQueries,
   disabled,
   confirmTitle = "Confirmar exclusão",
   confirmDescription = "Tem certeza que deseja excluir este item? Essa ação não poderá ser desfeita.",
@@ -52,6 +56,11 @@ export function ActionDelete<TArgs = void>({
         if (revalidateQueries?.length) {
           await refetchQuery(revalidateQueries);
         }
+        if (invalidateQueries?.length) {
+          await Promise.all(
+            invalidateQueries.map((queryKey) => invalidateQuery(queryKey))
+          );
+        }
       } catch (err) {
         console.error(err);
         toast.error(`Não foi possível excluir ${name}.`);
@@ -61,17 +70,15 @@ export function ActionDelete<TArgs = void>({
 
   return (
     <>
-      {/* Botão de ação visualmente igual aos outros (ícone dentro da tabela) */}
       <Button
-     
+        variant="ghost"
         onClick={handleDelete}
         disabled={disabled || isPending}
-      variant="outline"
-            size="icon"
-            className="h-8 w-8 sm:hover:bg-transparent"
-            title="Excluir"
+        className={
+          "text-destructive hover:text-destructive/80 border-border flex h-8 w-8 items-center gap-2 rounded-sm border p-1 transition"
+        }
       >
-        <Trash2 className="h-4.5 w-4.5 text-destructive" />
+        <Trash2 className="h-4.5 w-4.5" />
       </Button>
 
       {/* Dialog de confirmação */}

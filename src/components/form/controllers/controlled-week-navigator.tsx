@@ -202,7 +202,7 @@ function WeekNavigatorContent({
   return (
     <div className={cn("w-full space-y-3", className)}>
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-foreground">
+        <h3 className="text-foreground font-semibold">
           {formatMonthYear(selectedDate)}
         </h3>
         <div className="flex gap-2 max-sm:gap-4">
@@ -234,8 +234,8 @@ function WeekNavigatorContent({
       <div
         ref={scrollContainerRef}
         className={cn(
-          "flex gap-2 overflow-x-auto pb-2 scroll-smooth",
-          hasError && "ring-2 ring-destructive rounded-xl",
+          "flex gap-2 overflow-x-auto scroll-smooth pb-2",
+          hasError && "ring-destructive rounded-xl ring-2"
         )}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
@@ -252,20 +252,20 @@ function WeekNavigatorContent({
               onClick={() => !pastDay && onSelectDate(date)}
               disabled={disabled || pastDay}
               className={cn(
-                "flex min-w-15 flex-col items-center justify-center rounded-xl px-3 py-3 transition-all cursor-pointer",
-                "hover:bg-accent/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-muted/50",
+                "flex min-w-15 cursor-pointer flex-col items-center justify-center rounded-xl px-3 py-3 transition-all",
+                "hover:bg-accent/50 focus-visible:ring-ring focus:outline-none focus-visible:ring-2",
+                "disabled:hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-50",
                 selected
-                  ? "bg-primary text-primary-foreground shadow-md hover:bg-primary/80"
+                  ? "bg-primary text-primary-foreground hover:bg-primary/80 shadow-md"
                   : "bg-accent/50 text-muted-foreground hover:text-foreground",
-                today && !selected && "ring-2 ring-primary/30",
+                today && !selected && "ring-primary/30 ring-2"
               )}
             >
               <span className="text-xs font-medium">{formatDayName(date)}</span>
               <span
                 className={cn(
                   "text-xl font-bold",
-                  selected ? "text-primary-foreground" : "text-foreground",
+                  selected ? "text-primary-foreground" : "text-foreground"
                 )}
               >
                 {formatDayNumber(date)}

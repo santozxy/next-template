@@ -84,14 +84,14 @@ export function GlobalForm<
       {steps.length > 0 && (
         <StepProgressBar currentStep={currentStep + 1} steps={steps} />
       )}
-      <Card className="max-sm:py-0 max-sm:border-0">
+      <Card className="max-sm:border-0 max-sm:py-0">
         <CardContent className="max-sm:px-0">
           <FormProvider {...methods}>
             <div className="flex flex-col gap-6">
-              <div className="gap-6 flex flex-col">
+              <div className="flex flex-col gap-6">
                 {React.Children.toArray(children)[currentStep]}
               </div>
-              <div className="flex  justify-between gap-6 flex-row">
+              <div className="flex flex-row justify-between gap-6">
                 {steps.length > 0 && currentStep > 0 && (
                   <Button
                     onClick={goToPreviousStep}

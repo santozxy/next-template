@@ -85,13 +85,13 @@ export function ControlledImages<FormType extends FieldValues>({
             : [];
 
           const base64Files = await Promise.all(
-            selectedFiles.map((file) => fileToBase64(file)),
+            selectedFiles.map((file) => fileToBase64(file))
           );
 
           if (multiple) {
             const updated = [...images, ...base64Files].slice(
               0,
-              limit ?? Infinity,
+              limit ?? Infinity
             );
             onChange(updated);
           } else {

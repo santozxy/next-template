@@ -8,8 +8,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
-interface ControlledSingleCheckboxProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType> {
+interface ControlledSingleCheckboxProps<
+  FormType extends FieldValues,
+> extends UseControllerProps<FormType> {
   label: string;
   className?: string;
   disabled?: boolean;

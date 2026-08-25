@@ -7,14 +7,9 @@ import { Role } from "@/domains/auth/enums";
 import { createUser } from "@/domains/users/actions";
 import { CreateUser, User } from "@/domains/users/types";
 import { useServerAction } from "@/hooks/use-server-action";
-import { queryClient } from "@/lib/tanstack-query/client";
 import { queryKeys } from "@/lib/tanstack-query/keys";
 import { useForm } from "react-hook-form";
-
-const roleOptions = [
-  { id: Role.admin, name: "Administrador" },
-  { id: Role.member, name: "Membro" },
-];
+import { roleOptions } from "./helpers";
 
 interface CreateUserFormProps {
   onSuccess?: () => void;
@@ -34,10 +29,8 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
   const { mutateAsync, isPending } = useServerAction<User, CreateUser>({
     mutationFn: createUser,
     successMessage: "Usuário cadastrado com sucesso.",
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
-      onSuccess?.();
-    },
+    onSuccess: () => onSuccess?.(),
+    invalidateQueries: [queryKeys.users.all],
   });
 
   return (

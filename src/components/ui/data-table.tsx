@@ -24,8 +24,11 @@ export interface ColumnDef<T, K extends NestedKeyOf<T> = NestedKeyOf<T>> {
   header: string;
   render?: (value: PathValue<T, K>, row: T) => ReactNode;
   className?: HTMLTableCellElement["className"];
+  /** Se true, esta coluna será destacada como título no card mobile */
   primary?: boolean;
+  /** Se true, esta coluna será exibida como status no canto superior direito */
   isStatus?: boolean;
+  /** Se true, esta coluna não será exibida no modo mobile */
   hideOnMobile?: boolean;
 }
 
@@ -67,26 +70,28 @@ export function DataTable<T>({
   const hasActions = !!actions;
   const totalColumns = columns.length + (hasActions ? 1 : 0);
   const resolvedLoadingActionsCount = useMemo(() => {
-    if (!hasActions) return 0;
+    if (!hasActions) {
+      return 0;
+    }
     if (loadingActionsCount) return Math.max(1, loadingActionsCount);
 
     try {
       const previewActions = actions({} as T);
       const count = countActionNodes(previewActions);
 
-      if (count > 0) return count;
+      if (count > 0) {
+        return count;
+      }
     } catch {
-      // Usa a quantidade padrão quando não for possível inferir as ações.
+      // fallback para contagem padrão quando não for possível inferir
     }
-
     return 2;
   }, [actions, hasActions, loadingActionsCount]);
 
-  const primaryColumn = columns.find((column) => column.primary) || columns[0];
-  const statusColumn = columns.find((column) => column.isStatus);
+  const primaryColumn = columns.find((col) => col.primary) || columns[0];
+  const statusColumn = columns.find((col) => col.isStatus);
   const secondaryColumns = columns.filter(
-    (column) =>
-      column !== primaryColumn && !column.isStatus && !column.hideOnMobile
+    (col) => col !== primaryColumn && !col.isStatus && !col.hideOnMobile
   );
 
   return (
@@ -100,12 +105,12 @@ export function DataTable<T>({
         <Table>
           <TableHeader>
             <TableRow>
-              {columns.map((column) => (
+              {columns.map((col) => (
                 <TableHead
-                  key={String(column.key)}
-                  className={cn("font-semibold", column.className)}
+                  key={String(col.key)}
+                  className={cn("font-semibold", col.className)}
                 >
-                  {column.header}
+                  {col.header}
                 </TableHead>
               ))}
 
@@ -119,13 +124,10 @@ export function DataTable<T>({
 
           <TableBody>
             {loading &&
-              Array.from({ length: loadingRows }).map((_, rowIndex) => (
-                <TableRow key={`skeleton-${rowIndex}`}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={String(column.key)}
-                      className={column.className}
-                    >
+              Array.from({ length: loadingRows }).map((_, rowIdx) => (
+                <TableRow key={`skeleton-${rowIdx}`}>
+                  {columns.map((col) => (
+                    <TableCell key={String(col.key)} className={col.className}>
                       <Skeleton className="h-4 w-[60%] rounded" />
                     </TableCell>
                   ))}
@@ -135,9 +137,9 @@ export function DataTable<T>({
                       <div className="flex items-center justify-center gap-2">
                         {Array.from({
                           length: resolvedLoadingActionsCount,
-                        }).map((_, actionIndex) => (
+                        }).map((_, idx) => (
                           <Skeleton
-                            key={`desktop-action-skeleton-${rowIndex}-${actionIndex}`}
+                            key={`desktop-action-skeleton-${rowIdx}-${idx}`}
                             className="h-8 w-8 rounded"
                           />
                         ))}
@@ -159,21 +161,21 @@ export function DataTable<T>({
             )}
 
             {!loading &&
-              data.map((row, rowIndex) => {
-                const key = getRowKey ? getRowKey(row, rowIndex) : rowIndex;
+              data.map((row, rowIdx) => {
+                const key = getRowKey ? getRowKey(row, rowIdx) : rowIdx;
 
                 return (
                   <TableRow key={key}>
-                    {columns.map((column) => {
-                      const value = getValueByColumnKey(row, column.key);
+                    {columns.map((col) => {
+                      const value = getValueByColumnKey(row, col.key);
 
                       return (
                         <TableCell
-                          key={String(column.key)}
-                          className={column.className}
+                          key={String(col.key)}
+                          className={col.className}
                         >
-                          {column.render
-                            ? column.render(value, row)
+                          {col.render
+                            ? col.render(value, row)
                             : String(value ?? "")}
                         </TableCell>
                       );
@@ -203,13 +205,12 @@ export function DataTable<T>({
           </TableBody>
         </Table>
       </div>
-
       <div className={cn("lg:hidden", className)}>
         {loading && (
           <div className="space-y-3">
-            {Array.from({ length: loadingRows }).map((_, rowIndex) => (
+            {Array.from({ length: loadingRows }).map((_, idx) => (
               <div
-                key={`mobile-skeleton-${rowIndex}`}
+                key={`mobile-skeleton-${idx}`}
                 className="border-border bg-card rounded-lg border p-4"
               >
                 <div className="space-y-3">
@@ -232,9 +233,9 @@ export function DataTable<T>({
                   {hasActions && (
                     <div className="border-border mt-3 flex justify-end gap-1 border-t pt-3">
                       {Array.from({ length: resolvedLoadingActionsCount }).map(
-                        (_, actionIndex) => (
+                        (_, actionIdx) => (
                           <Skeleton
-                            key={`mobile-action-skeleton-${rowIndex}-${actionIndex}`}
+                            key={`mobile-action-skeleton-${idx}-${actionIdx}`}
                             className="h-9 w-9 rounded-md"
                           />
                         )
@@ -246,17 +247,15 @@ export function DataTable<T>({
             ))}
           </div>
         )}
-
         {!loading && data.length === 0 && (
           <div className="border-border bg-card flex h-32 items-center justify-center rounded-lg border">
             <p className="text-muted-foreground text-sm">{emptyMessage}</p>
           </div>
         )}
-
         {!loading && data.length > 0 && (
           <div className="space-y-3">
-            {data.map((row, rowIndex) => {
-              const key = getRowKey ? getRowKey(row, rowIndex) : rowIndex;
+            {data.map((row, rowIdx) => {
+              const key = getRowKey ? getRowKey(row, rowIdx) : rowIdx;
               const primaryValue = getValueByColumnKey(row, primaryColumn.key);
               const statusValue = statusColumn
                 ? getValueByColumnKey(row, statusColumn.key)
@@ -286,24 +285,23 @@ export function DataTable<T>({
                       </div>
                     )}
                   </div>
-
                   {secondaryColumns.length > 0 && (
                     <div className="mt-3 flex flex-wrap items-start gap-4">
-                      {secondaryColumns.map((column) => {
-                        const value = getValueByColumnKey(row, column.key);
-                        const renderedValue = column.render
-                          ? column.render(value, row)
+                      {secondaryColumns.map((col) => {
+                        const value = getValueByColumnKey(row, col.key);
+                        const renderedValue = col.render
+                          ? col.render(value, row)
                           : String(value ?? "");
 
                         if (!renderedValue && renderedValue !== 0) return null;
 
                         return (
                           <div
-                            key={String(column.key)}
+                            key={String(col.key)}
                             className="flex flex-col gap-1 text-sm"
                           >
                             <span className="text-muted-foreground shrink-0 text-[10px] font-medium tracking-wider uppercase">
-                              {column.header}:
+                              {col.header}:
                             </span>
                             <span className="text-foreground truncate">
                               {renderedValue}
@@ -313,7 +311,6 @@ export function DataTable<T>({
                       })}
                     </div>
                   )}
-
                   {hasActions && (
                     <div className="border-border mt-3 flex justify-end gap-1 border-t pt-3">
                       {actions(row)}
@@ -322,7 +319,6 @@ export function DataTable<T>({
                 </div>
               );
             })}
-
             {infiniteScroll && onLoadMore && (
               <LoadMoreMobile
                 hasNextPage={hasNextPage}

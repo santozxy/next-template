@@ -1,25 +1,28 @@
 "use client";
 
+import { handleServerActionError } from "@/api/client";
+import { HandleError } from "@/api/error";
+import type { ApiResponse, ApiResponseError } from "@/api/types";
+import { invalidateQuery } from "@/lib/tanstack-query/methods";
+import { toast } from "@/lib/toast";
 import {
+  type QueryKey,
   useMutation,
   type UseMutationOptions,
   type UseMutationResult,
 } from "@tanstack/react-query";
-import { toast } from "@/lib/toast";
-import { HandleError } from "@/api/error";
-import { handleServerActionError } from "@/api/client";
-import type { ApiResponse, ApiResponseError } from "@/api/types";
 
 type ServerActionResult<T> = ApiResponse<T> | ApiResponseError;
 
-interface UseServerActionProps<TData, TVariables, TContext = unknown>
-  extends Omit<
-    UseMutationOptions<ApiResponse<TData>, HandleError, TVariables, TContext>,
-    "mutationFn"
-  > {
-  mutationFn: (
-    variables: TVariables
-  ) => Promise<ServerActionResult<TData>>;
+interface UseServerActionProps<
+  TData,
+  TVariables,
+  TContext = unknown,
+> extends Omit<
+  UseMutationOptions<ApiResponse<TData>, HandleError, TVariables, TContext>,
+  "mutationFn"
+> {
+  mutationFn: (variables: TVariables) => Promise<ServerActionResult<TData>>;
 
   /** Mensagem de erro custom - É recomendado retornar a mensagem do servidor(Backend) para ações de erro */
   errorMessage?: string;
@@ -29,6 +32,9 @@ interface UseServerActionProps<TData, TVariables, TContext = unknown>
 
   /** Desabilitar toast automático de sucesso */
   disableSuccessToast?: boolean;
+
+  /** Queries que devem ser invalidadas após uma mutação bem-sucedida */
+  invalidateQueries?: readonly QueryKey[];
 }
 
 export function useServerAction<TData, TVariables = void, TContext = unknown>({
@@ -36,6 +42,7 @@ export function useServerAction<TData, TVariables = void, TContext = unknown>({
   errorMessage,
   successMessage,
   disableSuccessToast,
+  invalidateQueries,
   onError,
   onSuccess,
   ...options
@@ -47,24 +54,25 @@ export function useServerAction<TData, TVariables = void, TContext = unknown>({
 > {
   return useMutation<ApiResponse<TData>, HandleError, TVariables, TContext>({
     ...options,
-
     mutationFn: async (variables) => {
       const response = await mutationFn(variables);
       await handleServerActionError(response);
       return response as ApiResponse<TData>;
     },
-
-    onSuccess: (data, variables, onMutateResult, context) => {
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      if (invalidateQueries?.length) {
+        await Promise.all(
+          invalidateQueries.map((queryKey) => invalidateQuery(queryKey))
+        );
+      }
+      await onSuccess?.(data, variables, onMutateResult, context);
       if (!disableSuccessToast) {
         toast.success(successMessage || data.message || "Sucesso");
       }
-
-      onSuccess?.(data, variables, onMutateResult, context);
     },
-
     onError: (error, variables, onMutateResult, context) => {
-      toast.error(errorMessage || error.message);
       onError?.(error, variables, onMutateResult, context);
+      toast.error(errorMessage || error.message);
     },
   });
 }

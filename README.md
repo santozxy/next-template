@@ -27,21 +27,21 @@ Template oficial para sistemas web da organização. Este repositório define a 
 
 ## Tecnologias
 
-| Tecnologia | Versão | Finalidade |
-|---|---|---|
-| Next.js | 16.x | Framework principal (App Router) |
-| React | 19.x | Biblioteca de UI |
-| TypeScript | 5.x | Tipagem estática |
-| TailwindCSS | 4.x | Estilização |
-| shadcn/ui + Radix UI | - | Componentes de UI acessíveis |
-| TanStack Query | 5.x | Gerenciamento de estado e cache |
-| NextAuth.js | 4.x | Autenticação |
-| React Hook Form | 7.x | Gerenciamento de formulários |
-| Zod | 4.x | Validação de schemas |
-| Sonner | 2.x | Notificações toast |
-| date-fns | 4.x | Manipulação de datas |
-| Recharts | 2.x | Gráficos |
-| Lucide React | - | Ícones |
+| Tecnologia           | Versão | Finalidade                       |
+| -------------------- | ------ | -------------------------------- |
+| Next.js              | 16.x   | Framework principal (App Router) |
+| React                | 19.x   | Biblioteca de UI                 |
+| TypeScript           | 5.x    | Tipagem estática                 |
+| TailwindCSS          | 4.x    | Estilização                      |
+| shadcn/ui + Radix UI | -      | Componentes de UI acessíveis     |
+| TanStack Query       | 5.x    | Gerenciamento de estado e cache  |
+| NextAuth.js          | 4.x    | Autenticação                     |
+| React Hook Form      | 7.x    | Gerenciamento de formulários     |
+| Zod                  | 4.x    | Validação de schemas             |
+| Sonner               | 2.x    | Notificações toast               |
+| date-fns             | 4.x    | Manipulação de datas             |
+| Recharts             | 2.x    | Gráficos                         |
+| Lucide React         | -      | Ícones                           |
 
 ---
 
@@ -61,14 +61,14 @@ Copie o arquivo de exemplo e preencha os valores:
 cp env.example .env.local
 ```
 
-| Variável | Obrigatória | Descrição |
-|---|---|---|
-| `NEXTAUTH_SECRET` | Sim | Segredo para assinar os tokens JWT do NextAuth |
-| `NEXTAUTH_URL` | Sim | URL base da aplicação (ex: `http://localhost:3000/login`) |
-| `NEXT_PUBLIC_MODE` | Sim | Modo de execução: `dev`, `demo` ou `prod` |
-| `NEXT_PUBLIC_API_DEV_BASE_URL` | Sim | URL base da API em desenvolvimento |
-| `NEXT_PUBLIC_API_DEMO_BASE_URL` | Sim | URL base da API em demonstração |
-| `NEXT_PUBLIC_API_PROD_BASE_URL` | Sim | URL base da API em produção |
+| Variável                        | Obrigatória | Descrição                                                 |
+| ------------------------------- | ----------- | --------------------------------------------------------- |
+| `NEXTAUTH_SECRET`               | Sim         | Segredo para assinar os tokens JWT do NextAuth            |
+| `NEXTAUTH_URL`                  | Sim         | URL base da aplicação (ex: `http://localhost:3000/login`) |
+| `NEXT_PUBLIC_MODE`              | Sim         | Modo de execução: `dev`, `demo` ou `prod`                 |
+| `NEXT_PUBLIC_API_DEV_BASE_URL`  | Sim         | URL base da API em desenvolvimento                        |
+| `NEXT_PUBLIC_API_DEMO_BASE_URL` | Sim         | URL base da API em demonstração                           |
+| `NEXT_PUBLIC_API_PROD_BASE_URL` | Sim         | URL base da API em produção                               |
 
 A variável `NEXT_PUBLIC_MODE` controla qual URL de API será utilizada em runtime, tanto no cliente quanto no servidor. Os valores aceitos são validados via Zod em `src/env.ts` — a aplicação lanca um erro explícito na inicialização se qualquer variável estiver ausente ou inválida.
 
@@ -171,8 +171,8 @@ O arquivo `src/proxy.ts` (equivalente ao `middleware.ts` do Next.js) protege as 
 ```ts
 // src/proxy.ts
 const publicRoutes: PublicRoute[] = [
-  { path: "/login", whenAuthed: "redirect" },   // redireciona para /dashboard se autenticado
-  { path: "/", whenAuthed: "not-redirect" },    // permanece acessível mesmo autenticado
+  { path: "/login", whenAuthed: "redirect" }, // redireciona para /dashboard se autenticado
+  { path: "/", whenAuthed: "not-redirect" }, // permanece acessível mesmo autenticado
 ];
 ```
 
@@ -218,7 +218,9 @@ Toda comunicação com a API externa passa **obrigatoriamente** por `src/api/cli
 import { fetchClient } from "@/api/client";
 
 export async function getEvents(params) {
-  const data = await fetchClient<ApiResponsePaginated<Event[]>>(`/events${queryString}`);
+  const data = await fetchClient<ApiResponsePaginated<Event[]>>(
+    `/events${queryString}`
+  );
   return data;
 }
 ```
@@ -234,7 +236,9 @@ export async function getEvents(params) {
 import { fetchServer } from "@/api/server";
 
 export async function getEventById(id: string) {
-  const { data } = await fetchServer<ApiResponse<EventDetails>>(`/events/${id}`);
+  const { data } = await fetchServer<ApiResponse<EventDetails>>(
+    `/events/${id}`
+  );
   return data;
 }
 ```
@@ -275,20 +279,27 @@ interface ApiResponseError {
 
 Cada entidade de negócio possui sua própria pasta em `src/domains/[entidade]/` com os seguintes arquivos:
 
-| Arquivo | Responsabilidade |
-|---|---|
-| `types.ts` | Interfaces e enums TypeScript da entidade |
-| `client.ts` | Funções de leitura para Client Components (usa `fetchClient`) |
-| `server.ts` | Funções de leitura para Server Components (usa `fetchServer`) |
+| Arquivo      | Responsabilidade                                                    |
+| ------------ | ------------------------------------------------------------------- |
+| `types.ts`   | Interfaces e enums TypeScript da entidade                           |
+| `client.ts`  | Funções de leitura para Client Components (usa `fetchClient`)       |
+| `server.ts`  | Funções de leitura para Server Components (usa `fetchServer`)       |
 | `actions.ts` | Server Actions para mutações (POST, PUT, DELETE) com `"use server"` |
-| `enums.ts` | Enumerações específicas do domínio |
+| `enums.ts`   | Enumerações específicas do domínio                                  |
 
 ### Exemplo: criando um novo domínio
 
 ```ts
 // src/domains/products/types.ts
-export interface Product { id: string; name: string; price: number; }
-export interface CreateProduct { name: string; price: number; }
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+}
+export interface CreateProduct {
+  name: string;
+  price: number;
+}
 
 // src/domains/products/server.ts
 import { fetchServer } from "@/api/server";
@@ -301,14 +312,17 @@ export async function getProductById(id: string) {
 }
 
 // src/domains/products/actions.ts
-"use server";
+("use server");
 import { fetchServer } from "@/api/server";
 import { ApiResponse, ApiResponseError } from "@/api/types";
 import { CreateProduct, Product } from "./types";
 
 export async function createProduct(body: CreateProduct) {
   try {
-    return await fetchServer<ApiResponse<Product>>("/products", { method: "POST", body });
+    return await fetchServer<ApiResponse<Product>>("/products", {
+      method: "POST",
+      body,
+    });
   } catch (error) {
     return error as ApiResponseError;
   }
@@ -360,14 +374,17 @@ import { Permission } from "@/domains/auth/enums";
 
 <CanServer permission={Permission.createEvents}>
   <Button>Criar evento</Button>
-</CanServer>
+</CanServer>;
 
 // Em Client Components
 import { CanClient } from "@/components/can/client";
 
-<CanClient permission={Permission.deleteEvents} fallback={<span>Sem acesso</span>}>
+<CanClient
+  permission={Permission.deleteEvents}
+  fallback={<span>Sem acesso</span>}
+>
   <DeleteButton />
-</CanClient>
+</CanClient>;
 ```
 
 Ambos aceitam `permission` como valor único ou array. Quando array, **todas** as permissões precisam estar presentes (lógica `AND`).
@@ -405,7 +422,7 @@ const eventsKeys = {
     [...eventsKeys.lists(), params ?? {}] as const,
   details: () => [...eventsKeys.all, "detail"] as const,
   detail: (id: string) => [...eventsKeys.details(), id] as const,
-}
+};
 ```
 
 ### Listagem com paginação incremental
@@ -417,11 +434,17 @@ import { usePaginatedList } from "@/hooks/use-paginated-list";
 import { queryKey } from "@/lib/tanstack-query/keys";
 import { getEvents } from "@/domains/events/client";
 
-const { items, total, currentTotal, fetchNextPage, hasNextPage, isFetchingNextPage } =
-  usePaginatedList({
-    queryKey: [queryKey.events.list(params)],
-    queryFn: ({ pageParam }) => getEvents({ page: pageParam }),
-  });
+const {
+  items,
+  total,
+  currentTotal,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+} = usePaginatedList({
+  queryKey: [queryKey.events.list(params)],
+  queryFn: ({ pageParam }) => getEvents({ page: pageParam }),
+});
 ```
 
 ### Invalidar/refazer queries após mutação
@@ -461,20 +484,20 @@ const { mutateAsync, isPending } = useServerAction<Event, CreateEvent>({
 
 ### Controladores disponíveis
 
-| Componente | Uso |
-|---|---|
-| `ControlledInput` | Campo de texto simples |
-| `ControlledTextarea` | Área de texto |
-| `ControlledSelect` | Seleção única |
-| `ControlledMultiSelect` | Seleção múltipla |
-| `ControlledCombobox` | Combobox com busca |
-| `ControlledCheckbox` | Checkbox |
-| `ControlledSwitch` | Toggle switch |
-| `ControlledDatePicker` | Seletor de data |
-| `ControlledDateTimePicker` | Seletor de data e hora |
-| `ControlledImages` | Upload de imagem(ns) |
-| `ControlledInputCurrency` | Campo monetário |
-| `ControlledArrayInput` | Lista de inputs dinâmicos |
+| Componente                 | Uso                       |
+| -------------------------- | ------------------------- |
+| `ControlledInput`          | Campo de texto simples    |
+| `ControlledTextarea`       | Área de texto             |
+| `ControlledSelect`         | Seleção única             |
+| `ControlledMultiSelect`    | Seleção múltipla          |
+| `ControlledCombobox`       | Combobox com busca        |
+| `ControlledCheckbox`       | Checkbox                  |
+| `ControlledSwitch`         | Toggle switch             |
+| `ControlledDatePicker`     | Seletor de data           |
+| `ControlledDateTimePicker` | Seletor de data e hora    |
+| `ControlledImages`         | Upload de imagem(ns)      |
+| `ControlledInputCurrency`  | Campo monetário           |
+| `ControlledArrayInput`     | Lista de inputs dinâmicos |
 
 Todos recebem `name`, `control` e `rules` (regras do React Hook Form).
 
@@ -500,26 +523,26 @@ pnpm dlx shadcn@latest add [component-name]
 
 ## Hooks Customizados
 
-| Hook | Descrição |
-|---|---|
-| `useServerAction` | Mutações com Server Actions + toast automático |
-| `usePaginatedList` | Listagem infinita com TanStack Query |
-| `useDebounce` | Debounce de valor para buscas |
-| `useMobile` | Detecta se o viewport é mobile |
+| Hook               | Descrição                                      |
+| ------------------ | ---------------------------------------------- |
+| `useServerAction`  | Mutações com Server Actions + toast automático |
+| `usePaginatedList` | Listagem infinita com TanStack Query           |
+| `useDebounce`      | Debounce de valor para buscas                  |
+| `useMobile`        | Detecta se o viewport é mobile                 |
 
 ---
 
 ## Utilitários
 
-| Arquivo | Funções exportadas |
-|---|---|
-| `utils/date.ts` | Formatação de datas com `date-fns` e suporte a timezone |
-| `utils/mask.ts` | Máscaras de CPF, CNPJ, telefone, CEP |
+| Arquivo                | Funções exportadas                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `utils/date.ts`        | Formatação de datas com `date-fns` e suporte a timezone                            |
+| `utils/mask.ts`        | Máscaras de CPF, CNPJ, telefone, CEP                                               |
 | `utils/permissions.ts` | `hasPermission`, `getRoutePermission`, `routePermissionsMap`, `permissionsModules` |
-| `utils/queries.ts` | `encodeQueryString` — monta query strings sem parâmetros nulos |
-| `utils/regex.ts` | Padrões regex: URL, Instagram, Facebook, email, etc. |
-| `utils/text.ts` | Utilitários de manipulação de strings |
-| `lib/shadcn/utils.ts` | `cn()` — merge de classes Tailwind com `clsx` + `tailwind-merge` |
+| `utils/queries.ts`     | `encodeQueryString` — monta query strings sem parâmetros nulos                     |
+| `utils/regex.ts`       | Padrões regex: URL, Instagram, Facebook, email, etc.                               |
+| `utils/text.ts`        | Utilitários de manipulação de strings                                              |
+| `lib/shadcn/utils.ts`  | `cn()` — merge de classes Tailwind com `clsx` + `tailwind-merge`                   |
 
 ---
 
@@ -576,13 +599,13 @@ import { fetchServer } from "../../api/server";
 
 ### Separação de responsabilidades
 
-| Camada | Onde fica | Regra |
-|---|---|---|
-| Busca server-side | `domains/[entidade]/server.ts` | Usa `fetchServer`, chamado em RSC |
-| Busca client-side | `domains/[entidade]/client.ts` | Usa `fetchClient`, chamado via TanStack Query |
-| Mutações | `domains/[entidade]/actions.ts` | `"use server"`, chamado via `useServerAction` |
-| Lógica de UI | `app/[rota]/components/` | Componentes específicos da página |
-| Componentes reutilizáveis | `components/` | Sem lógica de domínio |
+| Camada                    | Onde fica                       | Regra                                         |
+| ------------------------- | ------------------------------- | --------------------------------------------- |
+| Busca server-side         | `domains/[entidade]/server.ts`  | Usa `fetchServer`, chamado em RSC             |
+| Busca client-side         | `domains/[entidade]/client.ts`  | Usa `fetchClient`, chamado via TanStack Query |
+| Mutações                  | `domains/[entidade]/actions.ts` | `"use server"`, chamado via `useServerAction` |
+| Lógica de UI              | `app/[rota]/components/`        | Componentes específicos da página             |
+| Componentes reutilizáveis | `components/`                   | Sem lógica de domínio                         |
 
 ### Formatação
 
@@ -597,11 +620,11 @@ pnpm format:fix    # corrige
 
 ## Scripts Disponíveis
 
-| Script | Descrição |
-|---|---|
-| `pnpm dev` | Inicia o servidor de desenvolvimento com Turbopack |
-| `pnpm build` | Formata o código e gera o build de produção |
-| `pnpm start` | Inicia o servidor de produção |
-| `pnpm lint` | Executa o ESLint |
-| `pnpm format` | Verifica a formatação com Prettier |
-| `pnpm format:fix` | Corrige a formatação com Prettier |
+| Script            | Descrição                                          |
+| ----------------- | -------------------------------------------------- |
+| `pnpm dev`        | Inicia o servidor de desenvolvimento com Turbopack |
+| `pnpm build`      | Formata o código e gera o build de produção        |
+| `pnpm start`      | Inicia o servidor de produção                      |
+| `pnpm lint`       | Executa o ESLint                                   |
+| `pnpm format`     | Verifica a formatação com Prettier                 |
+| `pnpm format:fix` | Corrige a formatação com Prettier                  |

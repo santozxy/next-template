@@ -1,17 +1,19 @@
-import { Github } from "lucide-react"
-import Link from "next/link"
+import { Github } from "lucide-react";
+import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border py-12">
+    <footer className="border-border border-t py-12">
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-foreground">Next</span>
-            <span className="text-xl font-bold text-muted-foreground">Template</span>
+            <span className="text-foreground text-xl font-bold">Next</span>
+            <span className="text-muted-foreground text-xl font-bold">
+              Template
+            </span>
           </div>
 
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Open source. MIT License.
           </p>
 
@@ -19,7 +21,7 @@ export function Footer() {
             <Link
               href="https://github.com/syslae-solutions/next-template"
               target="_blank"
-              className="text-muted-foreground transition-colors hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
@@ -28,5 +30,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

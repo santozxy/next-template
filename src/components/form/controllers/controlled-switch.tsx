@@ -9,8 +9,9 @@ import {
   type UseControllerProps,
 } from "react-hook-form";
 
-interface ControlledSwitchProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType> {
+interface ControlledSwitchProps<
+  FormType extends FieldValues,
+> extends UseControllerProps<FormType> {
   label: string;
   description?: string;
   className?: string;
@@ -48,12 +49,12 @@ export function ControlledSwitch<FormType extends FieldValues>({
                 )}
               </Label>
               {description && (
-                <p className="text-sm text-muted-foreground">{description}</p>
+                <p className="text-muted-foreground text-sm">{description}</p>
               )}
             </div>
           </div>
           {error?.message && (
-            <p className="text-sm font-medium text-destructive">
+            <p className="text-destructive text-sm font-medium">
               {error.message}
             </p>
           )}

@@ -72,7 +72,7 @@ export function FormSheet({
             className="h-8 w-8 sm:hover:bg-transparent"
             title="Editar"
           >
-            <PenBoxIcon className="h-4 w-4 text-warning" />
+            <PenBoxIcon className="text-warning h-4 w-4" />
           </Button>
         ) : (
           customButton || (
@@ -85,7 +85,7 @@ export function FormSheet({
       <SheetContent
         side={side}
         className={
-          className || "w-full overflow-x-scroll sm:max-w-lg px-4 pb-2 gap-6"
+          className || "w-full gap-6 overflow-x-scroll px-4 pb-2 sm:max-w-lg"
         }
       >
         <SheetHeader className="px-0 pb-0">

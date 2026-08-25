@@ -91,7 +91,7 @@ export function ControlledCombobox<FormType extends FieldValues>({
                   className={cn(
                     "text-muted-foreground justify-between",
                     error ? "border-destructive" : "",
-                    className,
+                    className
                   )}
                   style={{ width: width }}
                 >
@@ -119,7 +119,7 @@ export function ControlledCombobox<FormType extends FieldValues>({
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              value === option.id ? "opacity-100" : "opacity-0",
+                              value === option.id ? "opacity-100" : "opacity-0"
                             )}
                           />
                           {option.name}

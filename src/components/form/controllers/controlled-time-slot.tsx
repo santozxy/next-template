@@ -105,9 +105,9 @@ export function ControlledTimeSlotPicker<FormType extends FieldValues>({
             />
 
             {selectedOptions.length > 0 && multiple && (
-              <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
+              <div className="text-muted-foreground flex items-center gap-2 pt-1 text-xs">
                 <div className="flex items-center gap-1.5">
-                  <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                  <div className="bg-primary h-2 w-2 animate-pulse rounded-full" />
                   <span>
                     {selectedOptions.length}{" "}
                     {selectedOptions.length === 1
@@ -149,9 +149,9 @@ function TimeSlotPickerContent({
 }: TimeSlotPickerContentProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
         {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-16 rounded-xl bg-muted animate-pulse" />
+          <div key={i} className="bg-muted h-16 animate-pulse rounded-xl" />
         ))}
       </div>
     );
@@ -161,12 +161,12 @@ function TimeSlotPickerContent({
     return (
       <div
         className={cn(
-          "flex flex-col items-center justify-center py-8 px-4 rounded-xl border border-dashed border-muted-foreground/30 bg-muted/30",
-          hasError && "border-destructive",
+          "border-muted-foreground/30 bg-muted/30 flex flex-col items-center justify-center rounded-xl border border-dashed px-4 py-8",
+          hasError && "border-destructive"
         )}
       >
-        <Clock className="h-10 w-10 text-muted-foreground/50 mb-3" />
-        <p className="text-sm text-muted-foreground text-center">
+        <Clock className="text-muted-foreground/50 mb-3 h-10 w-10" />
+        <p className="text-muted-foreground text-center text-sm">
           {placeholder}
         </p>
       </div>
@@ -176,8 +176,8 @@ function TimeSlotPickerContent({
   return (
     <div
       className={cn(
-        "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 p-1 rounded-xl",
-        hasError && "ring-2 ring-destructive",
+        "grid grid-cols-2 gap-2 rounded-xl p-1 sm:grid-cols-3 md:grid-cols-4",
+        hasError && "ring-destructive ring-2"
       )}
     >
       {options.map((option) => {
@@ -191,12 +191,12 @@ function TimeSlotPickerContent({
             disabled={disabled}
             className={cn(
               "group relative flex flex-col items-center justify-center",
-              "h-16 px-3 rounded-xl border-2 transition-all duration-200",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
+              "h-16 rounded-xl border-2 px-3 transition-all duration-200",
+              "focus-visible:ring-ring focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+              "disabled:cursor-not-allowed disabled:opacity-50",
               isSelected
-                ? "border-primary bg-primary text-primary-foreground shadow-md scale-[1.02]"
-                : "border-border bg-card hover:border-primary/50 hover:bg-accent/50 hover:shadow-sm",
+                ? "border-primary bg-primary text-primary-foreground scale-[1.02] shadow-md"
+                : "border-border bg-card hover:border-primary/50 hover:bg-accent/50 hover:shadow-sm"
             )}
           >
             {/* Check indicator */}
@@ -206,7 +206,7 @@ function TimeSlotPickerContent({
                 "flex items-center justify-center transition-all duration-200",
                 isSelected
                   ? "bg-primary-foreground text-primary scale-100 opacity-100"
-                  : "scale-0 opacity-0",
+                  : "scale-0 opacity-0"
               )}
             >
               <Check className="h-3 w-3" />
@@ -215,10 +215,10 @@ function TimeSlotPickerContent({
             {/* Clock icon */}
             <Clock
               className={cn(
-                "h-4 w-4 mb-1 transition-colors duration-200",
+                "mb-1 h-4 w-4 transition-colors duration-200",
                 isSelected
                   ? "text-primary-foreground"
-                  : "text-muted-foreground group-hover:text-primary",
+                  : "text-muted-foreground group-hover:text-primary"
               )}
             />
 
@@ -226,7 +226,7 @@ function TimeSlotPickerContent({
             <span
               className={cn(
                 "text-sm font-semibold tracking-tight transition-colors duration-200",
-                isSelected ? "text-primary-foreground" : "text-foreground",
+                isSelected ? "text-primary-foreground" : "text-foreground"
               )}
             >
               {option.name}

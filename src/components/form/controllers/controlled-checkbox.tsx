@@ -15,8 +15,9 @@ interface CheckboxOption {
   name: string;
 }
 
-interface ControlledCheckboxGroupProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType> {
+interface ControlledCheckboxGroupProps<
+  FormType extends FieldValues,
+> extends UseControllerProps<FormType> {
   label: string;
   options: CheckboxOption[];
   className?: string;

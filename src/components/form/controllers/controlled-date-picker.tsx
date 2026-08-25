@@ -111,7 +111,7 @@ function DatePicker({
 }) {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedValue, setSelectedValue] = useState<Date | undefined>(
-    undefined,
+    undefined
   );
 
   useEffect(() => {
@@ -176,7 +176,7 @@ function DatePicker({
           className={cn(
             "hover:bg-muted w-full pl-3 text-left font-normal",
             !selectedValue && "text-muted-foreground",
-            error ? "border-destructive" : "",
+            error ? "border-destructive" : ""
           )}
         >
           {selectedValue ? (

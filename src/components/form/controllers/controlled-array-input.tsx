@@ -10,8 +10,9 @@ import {
   type UseControllerProps,
 } from "react-hook-form";
 
-interface ControlledArrayInputProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType> {
+interface ControlledArrayInputProps<
+  FormType extends FieldValues,
+> extends UseControllerProps<FormType> {
   label: string;
   placeholder?: string;
 }

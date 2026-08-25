@@ -55,7 +55,7 @@ export function ActionSwitch<TArgs = void>({
         await onAction(pendingValue);
         toast.success(`O status de ${name} foi alterado com sucesso!`);
         if (revalidateQueries?.length) {
-         await refetchQuery(revalidateQueries);
+          await refetchQuery(revalidateQueries);
         }
       } catch (err) {
         console.error(err);

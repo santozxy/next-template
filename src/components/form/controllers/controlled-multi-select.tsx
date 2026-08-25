@@ -13,8 +13,10 @@ interface Option {
   }>;
 }
 
-interface ControlledMultiSelectProps<FormType extends FieldValues>
-  extends Omit<UseControllerProps<FormType>, "defaultValue"> {
+interface ControlledMultiSelectProps<FormType extends FieldValues> extends Omit<
+  UseControllerProps<FormType>,
+  "defaultValue"
+> {
   label: string;
   options?: Option[];
   placeholder?: string;
